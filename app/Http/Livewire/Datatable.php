@@ -9,10 +9,15 @@ class Datatable extends Component
 {
     use WithPagination;
 
+    public $perPage = 10;
     public $sorts = [];
     public $filters = [
         "search" => null,
     ];
+
+    public function mount() {
+        $this->perPage = session()->get('perPage', 10);
+    }
 
     // ['id' => 'asc', 'name' => 'desc']
     public function sortBy($column) {
@@ -33,6 +38,12 @@ class Datatable extends Component
         $this->resetPage();
     }
 
+    // hook lifecicle
+    public function updatedPerPage($value) {
+        $this->resetPage();
+        session()->put('perPage', $value);
+    }
+
     public function runQueryBuilder() {
         $query = Product::query()
             ->when($this->filters['search'], fn($query, $search) => $query->where("name", "like", "%$search%"));
@@ -42,7 +53,7 @@ class Datatable extends Component
     public function render()
     {
         return view('livewire.datatable', [
-            "products" => $this->runQueryBuilder()->paginate(10),
+            "products" => $this->runQueryBuilder()->paginate($this->perPage),
         ]);
     }
 }

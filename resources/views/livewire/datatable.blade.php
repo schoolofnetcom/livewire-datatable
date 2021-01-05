@@ -1,8 +1,21 @@
 <div>
     <div class="w-full max-w-5xl flex flex-col space-y-4 container mx-auto">
         <div class="space-y-4">
-            <div class="w-1/4">
-                <input wire:model="filters.search" class="border text-light text-grey-700 pl-2" placeholder="Search products...">
+        <div class="flex">
+                <div class="w-2/3">
+                    <input wire:model="filters.search" class="border text-light text-grey-700 pl-2" placeholder="Search products...">
+                </div>
+                <div class="w-1/3 flex flex-row justify-center items-center">
+                    <label for="location" class="block text-sm mr-4 leading-5 font-medium text-gray-700">
+                        Mostrar
+                    </label>
+                    <select wire:model="perPage" class="w-full border bg-white rounded px-3 py-2 outline-none">
+                        <option class="py-1">10</option>
+                        <option class="py-1">25</option>
+                        <option class="py-1">50</option>
+                        <option class="py-1">100</option>
+                    </select>
+                </div>
             </div>
             <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
