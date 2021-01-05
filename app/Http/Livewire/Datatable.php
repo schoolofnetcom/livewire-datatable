@@ -9,9 +9,24 @@ class Datatable extends Component
 {
     use WithPagination;
 
+    public $sorts = [];
     public $filters = [
         "search" => null,
     ];
+
+    // ['id' => 'asc', 'name' => 'desc']
+    public function sortBy($column) {
+        if(! isset($this->sorts[$column])) return $this->sorts[$column] = 'asc';
+        if($this->sorts[$column] === 'asc') return $this->sorts[$column] = 'desc';
+        unset($this->sorts[$column]);
+    }
+
+    public function applySorting($query) {
+        foreach($this->sorts as $column => $direction) {
+            $query->orderBy($column, $direction);
+        }
+        return $query;
+    }
 
     // hook lifecicle
     public function updatedFilters() {
@@ -21,7 +36,7 @@ class Datatable extends Component
     public function runQueryBuilder() {
         $query = Product::query()
             ->when($this->filters['search'], fn($query, $search) => $query->where("name", "like", "%$search%"));
-        return $query;
+        return $this->applySorting($query);
     }
 
     public function render()
