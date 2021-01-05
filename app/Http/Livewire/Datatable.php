@@ -9,10 +9,25 @@ class Datatable extends Component
 {
     use WithPagination;
 
+    public $filters = [
+        "search" => null,
+    ];
+
+    // hook lifecicle
+    public function updatedFilters() {
+        $this->resetPage();
+    }
+
+    public function runQueryBuilder() {
+        $query = Product::query()
+            ->when($this->filters['search'], fn($query, $search) => $query->where("name", "like", "%$search%"));
+        return $query;
+    }
+
     public function render()
     {
         return view('livewire.datatable', [
-            "products" => Product::paginate(10),
+            "products" => $this->runQueryBuilder()->paginate(10),
         ]);
     }
 }
